@@ -11,7 +11,7 @@ class handDetector():
         self.min_tracking_confidence=min_tracking_confidence
         #find the hands on the camera
         self.mpHands=mp.solutions.hands
-        self.hands=self.mpHands.Hands(self.static_image_mode, self.min_detection_confidence, self.min_tracking_confidence )
+        self.hands=self.mpHands.Hands(self.static_image_mode, self.max_num_hands, self.min_detection_confidence, self.min_tracking_confidence)
         self.mpDraw=mp.solutions.drawing_utils
     def findHands(self, img, draw=True):
         imgRGB= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
