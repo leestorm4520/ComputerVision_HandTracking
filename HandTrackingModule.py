@@ -13,18 +13,20 @@ class handDetector():
         self.mpHands=mp.solutions.hands
         self.hands=self.mpHands.Hands(self.static_image_mode, self.min_detection_confidence, self.min_tracking_confidence )
         self.mpDraw=mp.solutions.drawing_utils
-    def findHands(self):
+    def findHands(self, img, draw=True):
         imgRGB= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        results=hands.process(imgRGB)
-            if(results.multi_hand_landmarks):
-                for handLM in results.multi_hand_landmarks:
-                    for id, lm in enumerate(handLM.landmark):
-                        #print(id+"\n"+lm)
-                        h,w,c=img.shape 
-                        cx,cy=int(lm.x*w), int(lm.y*h) #find the postion of the landmark
-                        #if id==0:
-                        #   cv2.circle(img,(cx,cy),25,(57,255,20),cv2.FILLED)
-                    mpDraw.draw_landmarks(img, handLM, mpHands.HAND_CONNECTIONS)
+        results=self.hands.process(imgRGB)
+        if(results.multi_hand_landmarks):
+            for handLM in results.multi_hand_landmarks:
+                if draw:
+                    # for id, lm in enumerate(handLM.landmark):
+                    #     #print(id+"\n"+lm)
+                    #     h,w,c=img.shape 
+                    #     cx,cy=int(lm.x*w), int(lm.y*h) #find the postion of the landmark
+                    #     #if id==0:
+                    #     #   cv2.circle(img,(cx,cy),25,(57,255,20),cv2.FILLED)
+                    self.mpDraw.draw_landmarks(img, handLM, self.mpHands.HAND_CONNECTIONS)
+        return img
 
 
    
@@ -35,12 +37,15 @@ def main():
 
     # define a video capture object
     vid = cv2.VideoCapture(0)
+    detector=handDetector()
     
     while(True):
         
         # Capture the video frame
         # by frame
         ret, img= vid.read()
+        img=detector.findHands(img)
+
         cTime=time.time()
         fps=1/(cTime-pTime)
         pTime=cTime
