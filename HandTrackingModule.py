@@ -29,8 +29,6 @@ class handDetector():
         return img
 
 
-   
-
 def main():
     pTime=0
     cTime=0
