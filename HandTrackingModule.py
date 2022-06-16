@@ -36,14 +36,14 @@ def main():
 
     # define a video capture object
     vid = cv2.VideoCapture(0)
-    detector=handDetector()
+    detector=handDetector() #create a handDetector object (no argument, use default value)
     
     while(True):
         
         # Capture the video frame
         # by frame
         ret, img= vid.read()
-        img=detector.findHands(img)
+        img=detector.findHands(img) #pass the image recorded by the camera
 
         cTime=time.time()
         fps=1/(cTime-pTime)
