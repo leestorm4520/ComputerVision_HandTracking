@@ -16,18 +16,23 @@ class handDetector():
         self.mpDraw=mp.solutions.drawing_utils
     def findHands(self, img, draw=True):
         imgRGB= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        results=self.hands.process(imgRGB)
-        if(results.multi_hand_landmarks):
-            for handLM in results.multi_hand_landmarks:
+        self.results=self.hands.process(imgRGB)
+        if(self.results.multi_hand_landmarks):
+            for handLM in self.results.multi_hand_landmarks:
                 if draw:
-                    # for id, lm in enumerate(handLM.landmark):
-                    #     #print(id+"\n"+lm)
-                    #     h,w,c=img.shape 
-                    #     cx,cy=int(lm.x*w), int(lm.y*h) #find the postion of the landmark
-                    #     #if id==0:
-                    #     #   cv2.circle(img,(cx,cy),25,(57,255,20),cv2.FILLED)
                     self.mpDraw.draw_landmarks(img, handLM, self.mpHands.HAND_CONNECTIONS)
         return img
+    def findPosition(self, img, handNo=0, draw=True):
+        lmList=[]
+        if self.results.multi_hand_landmarks:
+            myHand= self.results.multi_hand_landmarks[handNo]
+            for id, lm in enumerate(myHand.landmark):
+                h,w,c=img.shape 
+                cx,cy=int(lm.x*w), int(lm.y*h) #find the postion of the landmark
+                lmList.append([id, cx, cy])
+                if draw:
+                    cv2.circle(img,(cx,cy),25,(57,255,20),cv2.FILLED)
+        return lmList
 
 
 def main():
@@ -44,6 +49,9 @@ def main():
         # by frame
         ret, img= vid.read()
         img=detector.findHands(img) #pass the image recorded by the camera
+        lmList=detector.findPosition(img)
+        if len(lmList)!=0:
+            print(lmList[4])
 
         cTime=time.time()
         fps=1/(cTime-pTime)
@@ -52,9 +60,7 @@ def main():
         # Display the resulting frame
         cv2.imshow('Image', img)
         
-        # the 'q' button is set as the
-        # quitting button you may use any
-        # desired button of your choice
+        # the 'q' button is set as the quitting button 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
   
