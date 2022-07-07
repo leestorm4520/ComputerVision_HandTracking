@@ -31,7 +31,7 @@ class handDetector():
                 cx,cy=int(lm.x*w), int(lm.y*h) #find the postion of the landmark
                 lmList.append([id, cx, cy])
                 if draw:
-                    cv2.circle(img,(cx,cy),25,(57,255,20),cv2.FILLED)
+                    cv2.circle(img,(cx,cy),10,(57,255,20),cv2.FILLED)
         return lmList
 
 
